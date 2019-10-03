@@ -81,6 +81,10 @@ defmodule ExCoveralls.Settings do
     read_config("print_summary", true)
   end
 
+  def get_print_summary_table do
+    true #read_config("print_summary_table", true)
+  end
+
   @doc """
   Reads the value for the specified key defined in the json file.
   """

@@ -44,13 +44,16 @@ defmodule ExCoveralls.Local do
   """
   def print_summary(stats, options \\ []) do
     enabled = ExCoveralls.Settings.get_print_summary
+    table_enabled = ExCoveralls.Settings.get_print_summary_table
 
-    if enabled do
-      file_width = ExCoveralls.Settings.get_file_col_width
-      IO.puts "----------------"
-      IO.puts print_string("~-6s ~-#{file_width}s ~8s ~8s ~8s", ["COV", "FILE", "LINES", "RELEVANT", "MISSED"])
-      coverage(stats, options) |> IO.puts
-      IO.puts "----------------"
+    cond do
+      enabled and table_enabled ->
+        file_width = ExCoveralls.Settings.get_file_col_width
+        IO.puts "----------------"
+        IO.puts print_string("~-6s ~-#{file_width}s ~8s ~8s ~8s", ["COV", "FILE", "LINES", "RELEVANT", "MISSED"])
+        coverage(stats, options ++ [list_files: true]) |> IO.puts
+        IO.puts "----------------"
+      enabled -> coverage(stats, options) |> IO.puts
     end
   end
 
@@ -79,7 +82,10 @@ defmodule ExCoveralls.Local do
   def coverage(stats, options \\ []) do
     count_info = Enum.map(stats, fn(stat) -> [stat, calculate_count(stat[:coverage])] end)
     count_info = sort(count_info, options)
-    Enum.join(format_body(count_info), "\n") <> "\n" <> format_total(count_info)
+    case options[:list_files] do
+      true -> Enum.join(format_body(count_info), "\n") <> "\n"
+      _ -> ""
+    end <> format_total(count_info)
   end
 
   defp sort(count_info, options) do

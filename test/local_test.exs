@@ -101,4 +101,6 @@ defmodule ExCoveralls.LocalTest do
       Local.execute(@source_info)
     end) =~ ""
   end
+
+  # TODO test_with_mock "Only print totals if print_summary_table is false"
 end

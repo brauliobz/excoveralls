@@ -138,5 +138,7 @@ defmodule Excoveralls.SettingsTest do
     refute Settings.get_print_summary
   end
 
+  # TODO tests for print_summary_table
+
 end
 
